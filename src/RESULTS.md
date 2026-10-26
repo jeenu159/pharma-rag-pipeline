@@ -1,10 +1,5 @@
-# Retrieval results (41 answerable questions, text-embedding-3-small, k=5)
+| 26 Oct | hybrid: Postgres ts_rank + vector, RRF | fixed_1000_200 | 0.54 | 0.83 | 0.64 |
+| 26 Oct | hybrid: BM25 + vector, RRF (kw weight 1.0) | fixed_1000_200 | 0.59 | 0.90 | 0.71 |
+| 26 Oct | hybrid: BM25 + vector, RRF (kw weight 0.3) | fixed_1000_200 | 0.73 | 0.93 | 0.81 |
 
-| Date | Change | Strategy | R@1 | R@5 | MRR |
-|---|---|---|---|---|---|
-| 26 Oct | baseline | fixed_1000_200 | 0.83 | 0.98 | 0.89 |
-| 26 Oct | baseline | recursive_1000_200 | 0.68 | 0.93 | 0.79 |
-| 26 Oct | named 311 unnamed labels + generic-name scoring | fixed_1000_200 | 0.85 | 0.98 | 0.91 |
-| 26 Oct | named 311 unnamed labels + generic-name scoring | recursive_1000_200 | 0.78 | 0.95 | 0.86 |
-
-Decision: keep fixed_1000_200.
+Decision: keep vector-only. ts_rank has no IDF (common words dominate); BM25 helps but the drug-name chunk header already gives vector search the exact-match signal.

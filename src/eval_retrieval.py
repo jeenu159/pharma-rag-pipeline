@@ -1,6 +1,7 @@
 import json
 from collections import defaultdict
 import psycopg
+from search import search, DSN, STRATEGY, MODE
 from search import search, DSN, STRATEGY
 
 K = 5
@@ -46,7 +47,7 @@ for qtype, rank in results:
     if qtype.startswith("hard_"):
         groups[qtype].append(rank)
 
-print(f"\nstrategy = {STRATEGY}")
+print(f"\nstrategy = {STRATEGY}  mode = {MODE}")
 print(f"{'group':<18}{'n':>4}{'R@1':>7}{'R@5':>7}{'MRR':>7}")
 for name in ["ALL", "easy", "hard (all)", "hard_misspell", "hard_lay", "hard_multipart", "hard_comparison"]:
     if name in groups:
