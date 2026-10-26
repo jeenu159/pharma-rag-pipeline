@@ -1,6 +1,8 @@
 import os
 import re
 import sys
+import time
+import cohere
 import psycopg
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -8,12 +10,16 @@ from rank_bm25 import BM25Okapi
 
 load_dotenv()
 client = OpenAI()
+co = cohere.ClientV2(api_key=os.getenv("COHERE_API_KEY"))
 
 DSN = "host=localhost port=5434 dbname=pharma user=rag password=rag"
 MODEL = "text-embedding-3-small"
+RERANK_MODEL = "rerank-v3.5"
 STRATEGY = os.getenv("RAG_STRATEGY", "fixed_1000_200")
-MODE = os.getenv("RAG_SEARCH", "vector")   # vector | hybrid | bm25_hybrid
-CANDIDATES = 20   # how many results each search contributes before fusion
+MODE = os.getenv("RAG_SEARCH", "vector")          # vector | hybrid | bm25_hybrid
+RERANK = os.getenv("RAG_RERANK", "none")          # none | cohere
+RERANK_MIN_GAP = float(os.getenv("RERANK_MIN_GAP", "6.5"))  # seconds; trial key ~10 calls/min
+CANDIDATES = 20   # results fetched before fusion or reranking
 RRF_K = 60        # standard RRF constant
 KW_WEIGHT = float(os.getenv("RAG_KW_WEIGHT", "1.0"))
 
@@ -64,6 +70,7 @@ STOPWORDS = {
     "as", "from", "about",
 }
 _bm25 = None
+_last_rerank = 0.0
 
 
 def tokenize(text):
@@ -105,8 +112,8 @@ def bm25_hybrid(question, q_vec, k):
     return [(cid, fused[cid], content[cid]) for cid in best]
 
 
-def search(question, k=5):
-    q_vec = client.embeddings.create(model=MODEL, input=question).data[0].embedding
+def first_stage(question, q_vec, k):
+    """Retrieve k results with the configured search mode (no reranking)."""
     if MODE == "bm25_hybrid":
         return bm25_hybrid(question, q_vec, k)
     params = {"vec": str(q_vec), "strategy": STRATEGY, "k": k,
@@ -115,9 +122,28 @@ def search(question, k=5):
         return conn.execute(HYBRID_SQL if MODE == "hybrid" else VECTOR_SQL, params).fetchall()
 
 
+def cohere_rerank(question, candidates, k):
+    """Reorder candidates with Cohere Rerank and keep the top k."""
+    global _last_rerank
+    wait = RERANK_MIN_GAP - (time.time() - _last_rerank)
+    if wait > 0:
+        time.sleep(wait)
+    resp = co.rerank(model=RERANK_MODEL, query=question,
+                     documents=[content for _, _, content in candidates], top_n=k)
+    _last_rerank = time.time()
+    return [(candidates[r.index][0], r.relevance_score, candidates[r.index][2]) for r in resp.results]
+
+
+def search(question, k=5):
+    q_vec = client.embeddings.create(model=MODEL, input=question).data[0].embedding
+    if RERANK == "cohere":
+        return cohere_rerank(question, first_stage(question, q_vec, CANDIDATES), k)
+    return first_stage(question, q_vec, k)
+
+
 if __name__ == "__main__":
     question = " ".join(sys.argv[1:])
-    print(f"mode={MODE}  strategy={STRATEGY}\n")
+    print(f"mode={MODE}  rerank={RERANK}  strategy={STRATEGY}\n")
     for cid, score, content in search(question):
         print(f"[{cid}] score={score:.4f}")
         print(content[:200].replace("\n", " "))
