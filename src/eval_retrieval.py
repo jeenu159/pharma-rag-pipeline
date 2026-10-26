@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 import psycopg
 from search import search, DSN
 
@@ -16,6 +17,13 @@ def is_hit(meta, item):
     return same_drug and section == item.get("section")
 
 
+def scores(ranks):
+    n = len(ranks)
+    return (sum(r == 1 for r in ranks) / n,
+            sum(r is not None for r in ranks) / n,
+            sum(1 / r for r in ranks if r) / n)
+
+
 results = []
 with psycopg.connect(DSN) as conn:
     for item in golden:
@@ -31,12 +39,18 @@ with psycopg.connect(DSN) as conn:
         meta = {cid: (sid, drug, sec) for cid, sid, drug, sec in rows}
 
         rank = next((i + 1 for i, cid in enumerate(chunk_ids) if is_hit(meta[cid], item)), None)
-        results.append((item["id"], rank))
-        print(f"{item['id']:>3}  rank={rank or '-'}  {item['question'][:70]}")
+        results.append((item["type"], rank))
+        print(f"{item['id']:>3}  rank={rank or '-'}  [{item['type']}]  {item['question'][:60]}")
 
-n = len(results)
-recall_1 = sum(1 for _, r in results if r == 1) / n
-recall_5 = sum(1 for _, r in results if r) / n
-mrr = sum(1 / r for _, r in results if r) / n
+groups = defaultdict(list)
+for qtype, rank in results:
+    groups["ALL"].append(rank)
+    groups["hard (all)" if qtype.startswith("hard_") else "easy"].append(rank)
+    if qtype.startswith("hard_"):
+        groups[qtype].append(rank)
 
-print(f"\nquestions={n}  recall@1={recall_1:.2f}  recall@5={recall_5:.2f}  MRR={mrr:.2f}")
+print(f"\n{'group':<18}{'n':>4}{'R@1':>7}{'R@5':>7}{'MRR':>7}")
+for name in ["ALL", "easy", "hard (all)", "hard_misspell", "hard_lay", "hard_multipart", "hard_comparison"]:
+    if name in groups:
+        r1, r5, mrr = scores(groups[name])
+        print(f"{name:<18}{len(groups[name]):>4}{r1:>7.2f}{r5:>7.2f}{mrr:>7.2f}")
