@@ -1,4 +1,5 @@
 import psycopg
+import os
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -9,6 +10,7 @@ DSN = "host=localhost port=5434 dbname=pharma user=rag password=rag"
 MODEL = "text-embedding-3-small"
 STRATEGY = "fixed_1000_200"
 BATCH = 200
+STRATEGY = os.getenv("RAG_STRATEGY", "fixed_1000_200")
 
 with psycopg.connect(DSN) as conn:
     conn.execute("""
