@@ -25,8 +25,8 @@ def answer(question, k=5):
         model=LLM,
         messages=[{"role": "user", "content": PROMPT.format(context=context, question=question)}],
     )
-    return resp.choices[0].message.content
+    return {"text": resp.choices[0].message.content, "hits": hits, "usage": resp.usage}
 
 
 if __name__ == "__main__":
-    print(answer(" ".join(sys.argv[1:])))
+    print(answer(" ".join(sys.argv[1:]))["text"])
