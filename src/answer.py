@@ -1,4 +1,5 @@
 import sys
+import os
 from dotenv import load_dotenv
 from openai import OpenAI
 from search import search
@@ -18,7 +19,7 @@ Context:
 Question: {question}"""
 
 
-def answer(question, k=5):
+def answer(question, k=int(os.getenv("RAG_K", "5"))):
     hits = search(question, k)
     context = "\n\n".join(f"[{cid}] {content}" for cid, _, content in hits)
     resp = client.chat.completions.create(
