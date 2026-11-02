@@ -1,0 +1,41 @@
+{"id": 1, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 2, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 3, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "no", "correct": "partial", "note": "adds 'or worsening' of ocular infections (label says establishment only); omits exophthalmos"}
+{"id": 4, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 5, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 6, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "no", "correct": "partial", "note": "attributes replacement therapy to prednisone; label says that of natural glucocorticoids"}
+{"id": 7, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 8, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 9, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 10, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 11, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 12, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 14, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 15, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 17, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 18, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 19, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 20, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "no", "correct": "yes", "note": "adds mechanism 'to drive potassium into cells', not in context"}
+{"id": 21, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 22, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 23, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 24, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 25, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 26, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 27, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 28, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 33, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 34, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 35, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 36, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 37, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 38, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "no", "correct": "yes", "note": "adds advice 'contact his prescriber promptly' not in context; attributes rhythmical movements to acute dystonia"}
+{"id": 39, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 40, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 41, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 42, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 43, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 44, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 45, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 46, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "yes"}
+{"id": 47, "run": "eval/runs/answers_20261102_1216.jsonl", "labeller": "claude", "faithful": "yes", "correct": "partial", "note": "tranexamic acid part says 'not found' (context lacked it) - faithful, but incomplete vs reference"}
