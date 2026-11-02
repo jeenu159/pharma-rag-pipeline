@@ -229,3 +229,20 @@ eval/
 - Test the anti-embellishment prompt fix against the questions flagged in every run.
 - Run RAGAS alongside the custom judge and compare where they disagree.
 - Expose `search()` as an MCP tool for a LangGraph agent (Project 3).
+
+## RAGAS comparison (2 Nov, ragas 0.4.3, gpt-4.1-mini, run answers_20261102_1431, 90/91 answerable scored)
+
+| Metric | Mean |
+|---|---|
+| Faithfulness | 0.957 |
+| Context precision | 0.951 |
+| Context recall | 0.978 |
+| Answer relevancy | 0.756 |
+
+RAGAS faithfulness (<1.0 = unfaithful) vs GPT-5 judge: 88% agreement.
+- Both flagged: 6, 38, 42, 77
+- RAGAS only: 2, 12, 23, 47, 51, 66, 88 (mostly short answers; one unmatched paraphrase halves the score)
+- Judge only: 3, 44, 50, 91 (qualifier embellishments inside otherwise-supported claims)
+Answer relevancy penalises terse correct answers (Q5: 0.55, Q19: 0.46); not reported alone.
+Context recall flagged the real k=3 comparison gap (Q47: 0.50). Q81 errored (judge output length limit).
+Install note: ragas 0.4.3 needs langchain<1.0 / langchain-community<0.4 (newer versions removed a module it imports).
