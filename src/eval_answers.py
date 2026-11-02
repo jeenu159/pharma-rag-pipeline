@@ -59,8 +59,19 @@ for item in golden:
         )
         grade = json.loads(resp.choices[0].message.content)
 
-    rec = {"id": item["id"], "type": item["type"], "latency_s": round(latency, 2),
-           "cost_usd": cost, **grade, "answer": out["text"]}
+    rec = {
+        "id": item["id"],
+        "type": item["type"],
+        "question": item["question"],
+        "reference_answer": item["reference_answer"],
+        "context": [[cid, content] for cid, _, content in out["hits"]],
+        "latency_s": round(latency, 2),
+        "cost_usd": cost,
+        "faithful": grade["faithful"],
+        "correct": grade["correct"],
+        "reason": grade["reason"],
+        "answer": out["text"],
+    }
     records.append(rec)
     print(f"{item['id']:>3}  faithful={grade['faithful']:<3}  correct={grade['correct']:<7}  {latency:4.1f}s  {grade['reason'][:60]}")
 
@@ -73,7 +84,7 @@ answerable = [r for r in records if r["type"] != "unanswerable"]
 unanswerable = [r for r in records if r["type"] == "unanswerable"]
 latencies = sorted(r["latency_s"] for r in records)
 
-print(f"\nfaithfulness      = {sum(r['faithful'] == 'yes' for r in answerable) / len(answerable):.2f}")
+print(f"\nfaithfulness      = {sum(r['faithful'] == 'yes' for r in answerable) / len(answerable):.2f}  ({len(answerable)} answerable)")
 print(f"correct (full)    = {sum(r['correct'] == 'yes' for r in answerable) / len(answerable):.2f}")
 print(f"correct (partial) = {sum(r['correct'] == 'partial' for r in answerable) / len(answerable):.2f}")
 print(f"abstention        = {sum(r['correct'] == 'yes' for r in unanswerable)}/{len(unanswerable)}")
