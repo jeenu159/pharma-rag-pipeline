@@ -5,6 +5,15 @@
 | 26 Oct | vector, k=5 | 0.95 | 0.93 | 0.07 | 5.6s | $0.00102 |
 | 26 Oct | vector + Cohere rerank, k=5 | 0.93 | 0.88 | 0.12 | 6.5s | $0.00102 |
 | 27 Oct | vector + Cohere rerank, k=3 | 0.95 | 0.95 | 0.05 | 5.2s | $0.00084 |
+| 27 Oct | rerank, k=3, + neighbour expansion (±1 chunk) | 0.90 | 0.88 | 0.10 | 3.9s* | $0.00105 |
 
-Decision: ship rerank + k=3. Same quality (differences within run-to-run noise), 18% cheaper, faster median.
-Cost fell 18% not 40% because output/reasoning tokens dominate gpt-5-mini cost.
+Decision: neighbours off. Fixed the perphenazine 5618 gap, but ~3x context caused embellishment (4 unfaithful) and one lost-in-the-middle miss (Q21); +25% cost.
+*Latency not comparable across runs: API time varies by time of day; needs repeated runs.
+Note: run-to-run noise is ~1-2 questions (0.02-0.05); differences smaller than that are not conclusions.
+
+## Judge validation (2 Nov, run answers_20261102_1216, 41 answerable questions)
+
+Second judge: Claude (different model family), labelled independently.
+- Faithfulness agreement: 41/41 (100%). Both flagged Q3, Q6, Q20, Q38.
+- Correctness agreement: 40/41 (98%). Disagreement: Q6 (GPT-5: yes, Claude: partial; prednisone answer misattributes replacement therapy).
+- All 4 unfaithful answers are embellishments (added mechanism, advice, or misattribution), not fabricated facts.
