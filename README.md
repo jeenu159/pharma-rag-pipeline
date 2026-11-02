@@ -1,18 +1,19 @@
 # Pharma RAG: Question Answering over FDA Drug Labels
 
-A retrieval-augmented generation (RAG) system that answers questions about prescription and OTC drugs using FDA drug labels, with every claim cited to its source chunk. Built and evaluated end to end: every design choice below was tested against a hand-reviewed golden dataset and kept or rejected on measured results.
+A retrieval-augmented generation (RAG) system that answers questions about prescription and OTC drugs using FDA drug labels, with every claim cited to its source chunk. Built and evaluated end to end: every design choice below was tested against a 101-question, hand-reviewed golden dataset and kept or rejected on measured results.
 
 **Shipped configuration:** fixed-size chunking → OpenAI embeddings in pgvector → top-20 vector candidates → Cohere Rerank → top 3 chunks → `gpt-5-mini` answer with chunk citations and abstention.
 
-| Metric (shipped config) | Result |
+| Metric (shipped config, 101-question set) | Result |
 |---|---|
-| Retrieval recall@5 | **1.00** |
-| Retrieval MRR | **0.94** |
-| Answer faithfulness (LLM judge) | **0.95** |
-| Answer correctness (LLM judge) | **0.95** |
-| Abstention on unanswerable questions | **4/4** |
-| Median latency | **5.2 s** |
-| Cost per query | **~$0.0008** |
+| Retrieval recall@5 | **0.99** |
+| Retrieval MRR | **0.88** |
+| Answer faithfulness (LLM judge) | **0.91** |
+| Answer correctness (LLM judge) | **0.93** full, 0.07 partial, **0 wrong** |
+| Abstention on unanswerable questions | **10/10** |
+| Judge agreement with a second, cross-family judge | **100%** faithfulness, **98%** correctness |
+| Median latency | **5.1 s** |
+| Cost per query | **~$0.00085** |
 
 ---
 
@@ -59,23 +60,42 @@ flowchart LR
 
 ## Evaluation design
 
-**Golden dataset: 45 questions**
+**Golden dataset: 101 questions across about 60 drugs**
 
 | Type | Count | How it was built |
 |---|---|---|
-| Factual / numeric | 26 | 2 handwritten; 24 LLM-drafted from randomly sampled sections (2 per section type), then **human-reviewed**: 8 rewritten to remove copied label wording, 2 deleted as unrealistic |
-| Hard variants | 15 | Misspellings, lay wording, multi-part, comparisons, built from existing questions so the correct section is known |
-| Unanswerable | 4 | Price, pharmacy stock, reviews, company leadership (never in drug labels) |
+| Factual / numeric | 64 | 2 handwritten; 62 LLM-drafted from randomly sampled sections across 13 section types, every one **reviewed**: 13 rewritten to remove wording copied from the label or leaked answers, 3 deleted as unrealistic or unscoreable |
+| Hard variants | 27 | Misspellings, lay wording, multi-part, comparisons, built from existing questions so the correct section is known |
+| Unanswerable | 10 | Price, stock, reviews, insurance, company facts (never in drug labels) |
+
+The second batch of 56 questions used **only drugs not in the first 45**, so it works as a held-out test of choices made on the first batch.
 
 **Retrieval metrics:** recall@1, recall@5, MRR. Relevance is defined at **section level** (generic name + section type), not chunk level, so one golden set can score any chunking strategy, and duplicate labels from different manufacturers count correctly.
 
-**Answer metrics:** faithfulness (every claim supported by the retrieved context) and correctness (yes/partial/no against the reference) from an LLM judge. Abstention is checked with plain code, not an LLM, because a rule can decide it. Every run is saved per question with a timestamp in `eval/runs/` for regression diffs.
+**Answer metrics:** faithfulness (every claim supported by the retrieved context) and correctness (yes/partial/no against the reference) from an LLM judge. Abstention is checked with plain code, not an LLM, because a rule can decide it. Every run (retrieval and answers) is saved per question with a timestamp in `eval/runs/` for regression diffs.
+
+**Judge validation:** a second judge from a different model family (Claude) labelled all 41 answerable questions of one run independently. Agreement: **41/41 on faithfulness, 40/41 on correctness**. Labels are in `eval/judge2_labels.jsonl`.
 
 ---
 
 ## Results
 
-### Retrieval (41 answerable questions, k=5)
+### Final numbers (101 questions)
+
+| Config | R@1 | R@5 | MRR | Hard-question MRR | Misspelling MRR |
+|---|---|---|---|---|---|
+| Vector only | 0.74 | 0.95 | 0.82 | 0.76 | 0.58 |
+| **Vector top-20 → Cohere rerank (shipped)** | **0.81** | **0.99** | **0.88** | **0.88** | **0.92** |
+
+| Config | Faithful | Correct | Partial | Abstention | Median latency | Cost/query |
+|---|---|---|---|---|---|---|
+| **Rerank, k=3 (shipped)** | **0.91** | **0.93** | 0.07 | **10/10** | 5.1 s | $0.00085 |
+
+### Development experiments (first 45 questions)
+
+These were run while building, on the first 45 questions. Every decision was made here; the 101-question numbers above are the honest check.
+
+**Retrieval (41 answerable, k=5)**
 
 | Change | R@1 | R@5 | MRR | Decision |
 |---|---|---|---|---|
@@ -88,18 +108,16 @@ flowchart LR
 | Hybrid: BM25 + vector (RRF, keyword weight 0.3) | 0.73 | 0.93 | 0.81 | rejected |
 | **Vector top-20 → Cohere rerank** | **0.90** | **1.00** | **0.94** | **kept** |
 
-On hard questions alone, the reranker moved R@1 from 0.87 to **1.00**, and on misspellings from 0.60 to **1.00**.
-
-### Answers (45 questions)
+**Answers (45 questions)**
 
 | Config | Faithful | Correct | Partial | Median latency | Cost/query |
 |---|---|---|---|---|---|
 | Vector, k=5 | 0.95 | 0.93 | 0.07 | 5.6 s | $0.00102 |
 | Rerank, k=5 | 0.93 | 0.88 | 0.12 | 6.5 s | $0.00102 |
-| **Rerank, k=3 (shipped)** | **0.95** | **0.95** | **0.05** | **5.2 s** | **$0.00084** |
+| **Rerank, k=3** | **0.95** | **0.95** | **0.05** | **5.2 s** | **$0.00084** |
 | Rerank, k=3 + neighbour expansion | 0.90 | 0.88 | 0.10 | 3.9 s* | $0.00105 |
+| Rerank, k=3 (identical re-run, 6 days later) | 0.90 | 0.95 | 0.05 | 5.0 s | $0.00079 |
 
-All configurations abstained correctly on 4/4 unanswerable questions.
 *Latency is not comparable across runs made at different times; API response time varies with load.
 
 ---
@@ -112,19 +130,20 @@ All configurations abstained correctly on 4/4 unanswerable questions.
 
 **3. Hybrid search hurt on this data.** Postgres `ts_rank` has no IDF, so common words like "take" dominated, and MRR fell to 0.64. Real BM25 recovered to 0.71, and down-weighting keywords to 0.81, but none beat vector-only (0.91). The drug-name header already gave vector search the exact-match signal BM25 normally adds.
 
-**4. The reranker's value showed up in cost, not accuracy.** At k=5 it improved retrieval but not answers, because the right chunk was already in context. At k=3 it held answer quality with 40% fewer input tokens: **18% lower cost** and lower median latency despite the extra API call. Cost fell 18% rather than 40% because output and reasoning tokens dominate `gpt-5-mini` spend.
+**4. The reranker paid off in cost first, then in robustness.** At k=5 it improved retrieval but not answers, because the right chunk was already in context. At k=3 it held answer quality with 40% fewer input tokens: **18% lower cost** and lower median latency despite the extra API call. Cost fell 18% rather than 40% because output and reasoning tokens dominate `gpt-5-mini` spend. On the full set its value is clearer: **MRR +0.06**, and misspelled questions from **0.58 to 0.92**.
 
-**5. Fixing one example made the average worse.** The judge flagged a true but ungrounded claim ("tardive dyskinesia may be irreversible"). SQL showed the fact was in chunk 5618, between two retrieved chunks (5617 and 5619): the model had filled the gap from memory. Neighbour expansion fixed that case, but across the set faithfulness fell from 0.95 to 0.90 and cost rose 25%. About 3× more context led to embellishment, and one answer lost in the middle. It was kept off.
+**5. The first 45 questions had become a dev set.** Every decision was made looking at them. On 56 new questions about unseen drugs, vector MRR fell from 0.91 to 0.82. The reranker's gain held up on the new questions, which is what makes it a real improvement rather than a fit to the original set.
 
-**6. The judge was checked, not trusted.** Its unfaithful verdict above was verified by hand against the source chunks in SQL.
+**6. Run-to-run noise is about 0.05, measured.** The identical config scored faithfulness 0.95 and then 0.90 six days apart. Differences smaller than that aren't conclusions. That changed one finding: neighbour-chunk expansion (adding the chunks either side of each hit) fixed the specific gap that motivated it, but its overall faithfulness was within noise, and it cost 25% more, so it was kept off for **no measurable gain**, not because it was proven worse. Decisions now rest on questions that fail consistently across runs, not on averages.
+
+**7. The judge was validated, and its failures point at one fix.** A second judge from a different model family agreed on every faithfulness verdict. Every unfaithful answer is an **embellishment** (an added mechanism, added advice, a misattribution), never a fabricated dose or contraindication. Q3, Q6 and Q38 were flagged in three separate runs. That points to a specific prompt fix: forbid explanations or advice that aren't in the context.
 
 ---
 
 ## Limitations
 
-- **Small eval set.** At 45 questions, run-to-run noise is about 1–2 questions (0.02–0.05); smaller differences are not conclusions.
 - **Single-section relevance.** Some questions are answered equally well by two sections (e.g. contraindications vs drug interactions), so ranking metrics are slightly pessimistic.
-- **Judge not formally validated.** It was spot-checked, but there's no measured agreement rate against human labels yet.
+- **Judge validated by a second model, not by humans.** Cross-family agreement is high, but both judges could share a blind spot.
 - **No ANN index.** Exact cosine scan is fast at about 11k vectors; at millions, an HNSW index would be needed.
 - **Trial rerank key.** Rate-limited (about 10 calls/min), so a throttle is built in. Set `RERANK_MIN_GAP=0` with a production key.
 - **BM25 without stemming**, so "contraindicated" and "contraindications" don't match.
@@ -180,29 +199,33 @@ python src/eval_answers.py
 
 ```
 src/
-  fetch_labels.py      openFDA download
-  load_sections.py     labels -> sections table
-  extract_names.py     LLM name extraction for unnamed labels (cached)
-  apply_names.py       in-place name + generic-name update
-  chunk_fixed.py       fixed-size chunking
-  chunk_recursive.py   recursive chunking (tested, not shipped)
-  embed_chunks.py      resumable batch embedding
-  search.py            vector / hybrid / BM25-hybrid search + Cohere rerank
-  answer.py            prompt, generation, optional neighbour expansion
-  make_golden.py       LLM-drafted golden questions
-  apply_review.py      human review edits -> golden set
-  add_hard.py          hard question variants
-  eval_retrieval.py    recall@k and MRR, split by question type
-  eval_answers.py      LLM-judge faithfulness/correctness, cost, latency
+  fetch_labels.py        openFDA download
+  load_sections.py       labels -> sections table
+  extract_names.py       LLM name extraction for unnamed labels (cached)
+  apply_names.py         in-place name + generic-name update
+  chunk_fixed.py         fixed-size chunking
+  chunk_recursive.py     recursive chunking (tested, not shipped)
+  embed_chunks.py        resumable batch embedding
+  search.py              vector / hybrid / BM25-hybrid search + Cohere rerank
+  answer.py              prompt, generation, optional neighbour expansion
+  make_golden.py         first batch of LLM-drafted golden questions
+  make_golden_more.py    second batch, unseen drugs only
+  apply_review.py        review edits for batch 1
+  apply_review2.py       review edits, hard variants, unanswerable for batch 2
+  add_hard.py            hard variants for batch 1
+  eval_retrieval.py      recall@k and MRR by question type, saved per run
+  eval_answers.py        LLM-judge faithfulness/correctness, cost, latency, saved per run
+  label.py               blind labelling tool for judge validation
 eval/
-  golden.jsonl         45-question golden set
-  golden_draft.jsonl   original LLM drafts (kept for provenance)
-  runs/                timestamped per-question answer evals
-  RESULTS.md           running results log
+  golden.jsonl           101-question golden set
+  golden_draft*.jsonl    original LLM drafts (kept for provenance)
+  judge2_labels.jsonl    second-judge labels
+  runs/                  timestamped per-question retrieval and answer evals
+  RESULTS.md             running results log
 ```
 
 ## Next
 
-- Grow the golden set toward 100 questions and add a human-labelled agreement check for the judge.
+- Test the anti-embellishment prompt fix against the questions flagged in every run.
 - Run RAGAS alongside the custom judge and compare where they disagree.
 - Expose `search()` as an MCP tool for a LangGraph agent (Project 3).

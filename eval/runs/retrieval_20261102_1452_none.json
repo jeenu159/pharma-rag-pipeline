@@ -1,0 +1,1144 @@
+{
+ "strategy": "fixed_1000_200",
+ "mode": "vector",
+ "rerank": "none",
+ "k": 5,
+ "summary": {
+  "ALL": {
+   "n": 91,
+   "R@1": 0.736,
+   "R@5": 0.945,
+   "MRR": 0.824
+  },
+  "easy": {
+   "n": 64,
+   "R@1": 0.766,
+   "R@5": 0.969,
+   "MRR": 0.852
+  },
+  "hard (all)": {
+   "n": 27,
+   "R@1": 0.667,
+   "R@5": 0.889,
+   "MRR": 0.756
+  },
+  "hard_misspell": {
+   "n": 9,
+   "R@1": 0.444,
+   "R@5": 0.778,
+   "MRR": 0.583
+  },
+  "hard_lay": {
+   "n": 9,
+   "R@1": 0.667,
+   "R@5": 0.889,
+   "MRR": 0.759
+  },
+  "hard_multipart": {
+   "n": 5,
+   "R@1": 0.8,
+   "R@5": 1.0,
+   "MRR": 0.867
+  },
+  "hard_comparison": {
+   "n": 4,
+   "R@1": 1.0,
+   "R@5": 1.0,
+   "MRR": 1.0
+  }
+ },
+ "questions": [
+  {
+   "id": 1,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    9433,
+    9150,
+    9436,
+    3936,
+    9153
+   ]
+  },
+  {
+   "id": 2,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    2551,
+    2582,
+    2536,
+    2577,
+    2585
+   ]
+  },
+  {
+   "id": 3,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    1392,
+    8302,
+    8255,
+    7853,
+    1490
+   ]
+  },
+  {
+   "id": 4,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    5617,
+    5619,
+    5616,
+    5650,
+    5620
+   ]
+  },
+  {
+   "id": 5,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    5984,
+    5983,
+    5982,
+    5986,
+    5985
+   ]
+  },
+  {
+   "id": 6,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    8271,
+    8303,
+    7872,
+    1558,
+    1540
+   ]
+  },
+  {
+   "id": 7,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    4504,
+    4490,
+    4525,
+    4488,
+    4507
+   ]
+  },
+  {
+   "id": 8,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    4295,
+    4273,
+    4268,
+    4270,
+    4272
+   ]
+  },
+  {
+   "id": 9,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    8803,
+    8787,
+    8804,
+    8802,
+    8786
+   ]
+  },
+  {
+   "id": 10,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    3216,
+    3186,
+    3214,
+    3190,
+    3191
+   ]
+  },
+  {
+   "id": 11,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    2810,
+    2811,
+    2809,
+    2834,
+    2848
+   ]
+  },
+  {
+   "id": 12,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    7682,
+    7686,
+    7687,
+    7688,
+    7683
+   ]
+  },
+  {
+   "id": 14,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    10366,
+    6522,
+    6517,
+    10365,
+    10364
+   ]
+  },
+  {
+   "id": 15,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    2718,
+    2697,
+    2696,
+    2698,
+    2695
+   ]
+  },
+  {
+   "id": 17,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    10263,
+    10293,
+    10315,
+    10294,
+    10267
+   ]
+  },
+  {
+   "id": 18,
+   "type": "numeric",
+   "rank": null,
+   "retrieved": [
+    10019,
+    9994,
+    9967,
+    9966,
+    10017
+   ]
+  },
+  {
+   "id": 19,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    6619,
+    6564,
+    6620,
+    6596,
+    6565
+   ]
+  },
+  {
+   "id": 20,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    8008,
+    8009,
+    7999,
+    7998,
+    8000
+   ]
+  },
+  {
+   "id": 21,
+   "type": "numeric",
+   "rank": 4,
+   "retrieved": [
+    55,
+    5687,
+    6337,
+    6384,
+    101
+   ]
+  },
+  {
+   "id": 22,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    10308,
+    10312,
+    10314,
+    10313,
+    10309
+   ]
+  },
+  {
+   "id": 23,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    9255,
+    9284,
+    9258,
+    9257,
+    9256
+   ]
+  },
+  {
+   "id": 24,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    5639,
+    5640,
+    5624,
+    5644,
+    5607
+   ]
+  },
+  {
+   "id": 25,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    8323,
+    8325,
+    8324,
+    8326,
+    8314
+   ]
+  },
+  {
+   "id": 26,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    5485,
+    5483,
+    5484,
+    5474,
+    4183
+   ]
+  },
+  {
+   "id": 27,
+   "type": "numeric",
+   "rank": 2,
+   "retrieved": [
+    3221,
+    3220,
+    3222,
+    5241,
+    5059
+   ]
+  },
+  {
+   "id": 28,
+   "type": "numeric",
+   "rank": 2,
+   "retrieved": [
+    601,
+    600,
+    623,
+    602,
+    622
+   ]
+  },
+  {
+   "id": 33,
+   "type": "hard_misspell",
+   "rank": 2,
+   "retrieved": [
+    7853,
+    1392,
+    8302,
+    8255,
+    1556
+   ]
+  },
+  {
+   "id": 34,
+   "type": "hard_misspell",
+   "rank": 1,
+   "retrieved": [
+    10366,
+    10364,
+    6522,
+    6517,
+    6515
+   ]
+  },
+  {
+   "id": 35,
+   "type": "hard_misspell",
+   "rank": 2,
+   "retrieved": [
+    10313,
+    10263,
+    10267,
+    10265,
+    10272
+   ]
+  },
+  {
+   "id": 36,
+   "type": "hard_misspell",
+   "rank": 1,
+   "retrieved": [
+    3216,
+    3214,
+    3217,
+    3186,
+    3191
+   ]
+  },
+  {
+   "id": 37,
+   "type": "hard_misspell",
+   "rank": 1,
+   "retrieved": [
+    6384,
+    101,
+    5766,
+    55,
+    5687
+   ]
+  },
+  {
+   "id": 38,
+   "type": "hard_lay",
+   "rank": 1,
+   "retrieved": [
+    5618,
+    5619,
+    5617,
+    3104,
+    7790
+   ]
+  },
+  {
+   "id": 39,
+   "type": "hard_lay",
+   "rank": 1,
+   "retrieved": [
+    6619,
+    6589,
+    6596,
+    10467,
+    5321
+   ]
+  },
+  {
+   "id": 40,
+   "type": "hard_lay",
+   "rank": 1,
+   "retrieved": [
+    8323,
+    8325,
+    8324,
+    8326,
+    8314
+   ]
+  },
+  {
+   "id": 41,
+   "type": "hard_lay",
+   "rank": 1,
+   "retrieved": [
+    2718,
+    2697,
+    2672,
+    2696,
+    2673
+   ]
+  },
+  {
+   "id": 42,
+   "type": "hard_lay",
+   "rank": 1,
+   "retrieved": [
+    7682,
+    7686,
+    7683,
+    7688,
+    7687
+   ]
+  },
+  {
+   "id": 43,
+   "type": "hard_multipart",
+   "rank": 1,
+   "retrieved": [
+    5640,
+    5644,
+    5624,
+    5643,
+    5645
+   ]
+  },
+  {
+   "id": 44,
+   "type": "hard_multipart",
+   "rank": 1,
+   "retrieved": [
+    2810,
+    2834,
+    2811,
+    2809,
+    2848
+   ]
+  },
+  {
+   "id": 45,
+   "type": "hard_multipart",
+   "rank": 1,
+   "retrieved": [
+    10308,
+    10309,
+    10312,
+    10311,
+    10313
+   ]
+  },
+  {
+   "id": 46,
+   "type": "hard_comparison",
+   "rank": 1,
+   "retrieved": [
+    4295,
+    4528,
+    4525,
+    419,
+    8043
+   ]
+  },
+  {
+   "id": 47,
+   "type": "hard_comparison",
+   "rank": 1,
+   "retrieved": [
+    8323,
+    8324,
+    8325,
+    8326,
+    9435
+   ]
+  },
+  {
+   "id": 49,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    7493,
+    7511,
+    7516,
+    7510,
+    7512
+   ]
+  },
+  {
+   "id": 50,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    2751,
+    2765,
+    2746,
+    2752,
+    2750
+   ]
+  },
+  {
+   "id": 51,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    6953,
+    6957,
+    6954,
+    6955,
+    6946
+   ]
+  },
+  {
+   "id": 52,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    8485,
+    8480,
+    8483,
+    8481,
+    8583
+   ]
+  },
+  {
+   "id": 53,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    9269,
+    9280,
+    9238,
+    9244,
+    9242
+   ]
+  },
+  {
+   "id": 54,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    9179,
+    9172,
+    9169,
+    9173,
+    9208
+   ]
+  },
+  {
+   "id": 55,
+   "type": "numeric",
+   "rank": 2,
+   "retrieved": [
+    10057,
+    10056,
+    10039,
+    10055,
+    10038
+   ]
+  },
+  {
+   "id": 56,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    10155,
+    3036,
+    3079,
+    6790,
+    6789
+   ]
+  },
+  {
+   "id": 57,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    2948,
+    2923,
+    7046,
+    2942,
+    2917
+   ]
+  },
+  {
+   "id": 58,
+   "type": "numeric",
+   "rank": 2,
+   "retrieved": [
+    9784,
+    9875,
+    9872,
+    9874,
+    9867
+   ]
+  },
+  {
+   "id": 59,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    9657,
+    9656,
+    9640,
+    9611,
+    9614
+   ]
+  },
+  {
+   "id": 60,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    8565,
+    8563,
+    8463,
+    8566,
+    8562
+   ]
+  },
+  {
+   "id": 61,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    3813,
+    3812,
+    3811,
+    3808,
+    3835
+   ]
+  },
+  {
+   "id": 62,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    1232,
+    975,
+    10192,
+    10193,
+    976
+   ]
+  },
+  {
+   "id": 63,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    6876,
+    6879,
+    6878,
+    6877,
+    6870
+   ]
+  },
+  {
+   "id": 64,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    4159,
+    7957,
+    6175,
+    6195,
+    7977
+   ]
+  },
+  {
+   "id": 65,
+   "type": "numeric",
+   "rank": 5,
+   "retrieved": [
+    6328,
+    6327,
+    6329,
+    6322,
+    6318
+   ]
+  },
+  {
+   "id": 66,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    2136,
+    2125,
+    2099,
+    2135,
+    2100
+   ]
+  },
+  {
+   "id": 67,
+   "type": "factual",
+   "rank": 3,
+   "retrieved": [
+    4135,
+    7942,
+    4178,
+    6160,
+    6201
+   ]
+  },
+  {
+   "id": 68,
+   "type": "factual",
+   "rank": 2,
+   "retrieved": [
+    4342,
+    4415,
+    4341,
+    4414,
+    4410
+   ]
+  },
+  {
+   "id": 69,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    9876,
+    9877,
+    9879,
+    9911,
+    9894
+   ]
+  },
+  {
+   "id": 70,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    7149,
+    7158,
+    7186,
+    7147,
+    7185
+   ]
+  },
+  {
+   "id": 71,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    8338,
+    8339,
+    8360,
+    8306,
+    8340
+   ]
+  },
+  {
+   "id": 72,
+   "type": "factual",
+   "rank": 4,
+   "retrieved": [
+    9076,
+    9074,
+    9026,
+    9063,
+    9075
+   ]
+  },
+  {
+   "id": 73,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    4396,
+    4390,
+    4410,
+    4334,
+    4389
+   ]
+  },
+  {
+   "id": 74,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    1803,
+    1802,
+    1689,
+    1801,
+    1690
+   ]
+  },
+  {
+   "id": 75,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    918,
+    919,
+    898,
+    920,
+    916
+   ]
+  },
+  {
+   "id": 76,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    382,
+    378,
+    383,
+    381,
+    385
+   ]
+  },
+  {
+   "id": 77,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    1974,
+    2026,
+    2010,
+    1929,
+    1975
+   ]
+  },
+  {
+   "id": 78,
+   "type": "numeric",
+   "rank": 2,
+   "retrieved": [
+    6999,
+    9523,
+    9504,
+    6977,
+    6657
+   ]
+  },
+  {
+   "id": 79,
+   "type": "numeric",
+   "rank": 1,
+   "retrieved": [
+    5413,
+    5418,
+    5411,
+    5417,
+    5331
+   ]
+  },
+  {
+   "id": 80,
+   "type": "factual",
+   "rank": null,
+   "retrieved": [
+    9450,
+    9451,
+    9449,
+    9452,
+    9447
+   ]
+  },
+  {
+   "id": 81,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    4117,
+    4118,
+    4119,
+    4120,
+    4121
+   ]
+  },
+  {
+   "id": 82,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    9203,
+    9219,
+    9220,
+    9218,
+    9217
+   ]
+  },
+  {
+   "id": 83,
+   "type": "factual",
+   "rank": 2,
+   "retrieved": [
+    1520,
+    5936,
+    1512,
+    5944,
+    5937
+   ]
+  },
+  {
+   "id": 84,
+   "type": "numeric",
+   "rank": 2,
+   "retrieved": [
+    7773,
+    7772,
+    7771,
+    7770,
+    7775
+   ]
+  },
+  {
+   "id": 85,
+   "type": "numeric",
+   "rank": 2,
+   "retrieved": [
+    7378,
+    7377,
+    7379,
+    7376,
+    9338
+   ]
+  },
+  {
+   "id": 86,
+   "type": "factual",
+   "rank": 1,
+   "retrieved": [
+    7038,
+    7337,
+    7336,
+    7364,
+    7338
+   ]
+  },
+  {
+   "id": 87,
+   "type": "hard_misspell",
+   "rank": null,
+   "retrieved": [
+    7153,
+    7158,
+    7147,
+    7198,
+    7152
+   ]
+  },
+  {
+   "id": 88,
+   "type": "hard_misspell",
+   "rank": null,
+   "retrieved": [
+    5487,
+    2774,
+    2125,
+    7754,
+    9382
+   ]
+  },
+  {
+   "id": 89,
+   "type": "hard_misspell",
+   "rank": 1,
+   "retrieved": [
+    382,
+    385,
+    383,
+    380,
+    378
+   ]
+  },
+  {
+   "id": 90,
+   "type": "hard_misspell",
+   "rank": 4,
+   "retrieved": [
+    6328,
+    6327,
+    6329,
+    6318,
+    6317
+   ]
+  },
+  {
+   "id": 91,
+   "type": "hard_lay",
+   "rank": 3,
+   "retrieved": [
+    9504,
+    6999,
+    9523,
+    6977,
+    6657
+   ]
+  },
+  {
+   "id": 92,
+   "type": "hard_lay",
+   "rank": null,
+   "retrieved": [
+    10129,
+    3079,
+    10140,
+    10125,
+    3015
+   ]
+  },
+  {
+   "id": 93,
+   "type": "hard_lay",
+   "rank": 1,
+   "retrieved": [
+    7772,
+    7773,
+    7771,
+    7777,
+    7775
+   ]
+  },
+  {
+   "id": 94,
+   "type": "hard_lay",
+   "rank": 2,
+   "retrieved": [
+    1520,
+    1512,
+    5936,
+    5944,
+    5937
+   ]
+  },
+  {
+   "id": 95,
+   "type": "hard_multipart",
+   "rank": 1,
+   "retrieved": [
+    8565,
+    8566,
+    8567,
+    8563,
+    8569
+   ]
+  },
+  {
+   "id": 96,
+   "type": "hard_multipart",
+   "rank": 3,
+   "retrieved": [
+    7378,
+    7376,
+    7377,
+    7379,
+    7245
+   ]
+  },
+  {
+   "id": 97,
+   "type": "hard_comparison",
+   "rank": 1,
+   "retrieved": [
+    382,
+    919,
+    918,
+    385,
+    368
+   ]
+  },
+  {
+   "id": 98,
+   "type": "hard_comparison",
+   "rank": 1,
+   "retrieved": [
+    4178,
+    4135,
+    6201,
+    4177,
+    7942
+   ]
+  }
+ ]
+}
