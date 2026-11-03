@@ -1,5 +1,7 @@
 # Pharma RAG: Question Answering over FDA Drug Labels
 
+![ci](https://github.com/jeenu159/pharma-rag/actions/workflows/ci.yml/badge.svg)
+
 A retrieval-augmented generation (RAG) system that answers questions about prescription and OTC drugs using FDA drug labels, with every claim cited to its source chunk. Built and evaluated end to end: every design choice below was tested against a 101-question, hand-reviewed golden dataset and kept or rejected on measured results.
 
 **Shipped configuration:** fixed-size chunking → OpenAI embeddings in pgvector → top-20 vector candidates → Cohere Rerank → top 3 chunks → `gpt-5-mini` answer with chunk citations and abstention.
@@ -150,6 +152,51 @@ These were run while building, on the first 45 questions. Every decision was mad
 
 ---
 
+## Deployment and operations
+
+### API (FastAPI)
+
+| Endpoint | Auth | What it does |
+|---|---|---|
+| `GET /health` | none | Liveness check for Docker and load balancers |
+| `POST /ask` | `X-API-Key` | Answer with cited sources, latency and token counts |
+| `POST /ask/stream` | `X-API-Key` | Same answer streamed token by token (Server-Sent Events) |
+
+- **API-key auth:** requests without the key get a 401, so a leaked URL can't run up the LLM bill.
+- **Rate limiting:** 10 requests/minute per caller (`slowapi`); extra requests get a 429.
+- **Input validation:** questions must be 3–500 characters, rejected before any LLM call.
+
+### Container
+
+- **Multi-stage Dockerfile:** dependencies install in a build stage; the runtime image carries only the installed packages and the code (**101 MB**).
+- **API-only requirements** (9 pinned packages): eval tooling such as RAGAS and LangChain stays out of the production image.
+- **Runs as a non-root user**, with a Docker `HEALTHCHECK` on `/health`.
+- **No secrets in the image:** `.dockerignore` excludes `.env`; keys are injected at runtime.
+
+### Docker Compose
+
+`docker compose up -d` starts Postgres + pgvector and the API together.
+
+- **The database has no host port**, so it is reachable only from the API container, never from outside.
+- The API waits for the database to report **healthy** before starting.
+- **Data migration:** the vector database moves between environments with `pg_dump` / `pg_restore` (custom format), verified by chunk counts after restore.
+- `restart: unless-stopped` brings both services back after a crash or a reboot.
+
+### CI (GitHub Actions)
+
+Every push runs two jobs:
+
+1. **The Docker image builds.**
+2. **Retrieval smoke eval:** a fresh pgvector service container is loaded from a **12 MB fixture database** (the sections for 15 smoke questions plus 300 random distractor sections, keeping the original IDs), then the real pipeline runs (embeddings → pgvector → Cohere rerank). **The build fails if recall@5 < 0.9** (with 15 questions, one miss passes and two fail). Per-question results are uploaded as an artifact even when the run fails.
+
+The fixture is restored with the same `pgvector:pg17` image that created it, because the runner's own `pg_restore` is older and can't read Postgres 17 dumps.
+
+### Hosting
+
+Designed for a single EC2 instance (t3.small, 2 GB RAM) running Docker Compose, with only the API port open. For production scale: ECS Fargate for the API, RDS for PostgreSQL with pgvector, and HTTPS through an ALB with an ACM certificate. This demo serves plain HTTP, so the API key travels unencrypted.
+
+---
+
 ## Run it
 
 **Requirements:** Python 3.12, Docker, an OpenAI API key, a Cohere API key.
@@ -185,6 +232,15 @@ python src/eval_retrieval.py
 python src/eval_answers.py
 ```
 
+**Or run the API with Docker Compose** (needs `API_KEY` and `DB_PASSWORD` in `.env`, plus a dump in `data/pharma.dump`):
+
+```bash
+docker compose up -d --build
+docker compose cp data/pharma.dump db:/tmp/pharma.dump
+docker compose exec db pg_restore -U rag -d pharma --no-owner /tmp/pharma.dump
+python src/stream_test.py "Can I take trazodone with an MAOI?"
+```
+
 **Configuration (environment variables)**
 
 | Variable | Default | Options |
@@ -216,8 +272,18 @@ src/
   eval_retrieval.py      recall@k and MRR by question type, saved per run
   eval_answers.py        LLM-judge faithfulness/correctness, cost, latency, saved per run
   label.py               blind labelling tool for judge validation
+  api.py                 FastAPI app: /health, /ask, /ask/stream, API key, rate limit
+  stream_test.py         streaming client (set RAG_URL to test a deployed server)
+  make_smoke_fixture.py  builds the CI fixture database and smoke question set
+Dockerfile               multi-stage, non-root, healthcheck
+docker-compose.yml       pgvector + API, internal-only database
+requirements-api.txt     the 9 pinned packages the API image needs
+.github/workflows/ci.yml Docker build + retrieval smoke eval gate
+tests/fixtures/
+  smoke.dump             12 MB fixture database for CI
 eval/
   golden.jsonl           101-question golden set
+  smoke.jsonl            15-question subset used by CI
   golden_draft*.jsonl    original LLM drafts (kept for provenance)
   judge2_labels.jsonl    second-judge labels
   runs/                  timestamped per-question retrieval and answer evals
@@ -229,20 +295,3 @@ eval/
 - Test the anti-embellishment prompt fix against the questions flagged in every run.
 - Run RAGAS alongside the custom judge and compare where they disagree.
 - Expose `search()` as an MCP tool for a LangGraph agent (Project 3).
-
-## RAGAS comparison (2 Nov, ragas 0.4.3, gpt-4.1-mini, run answers_20261102_1431, 90/91 answerable scored)
-
-| Metric | Mean |
-|---|---|
-| Faithfulness | 0.957 |
-| Context precision | 0.951 |
-| Context recall | 0.978 |
-| Answer relevancy | 0.756 |
-
-RAGAS faithfulness (<1.0 = unfaithful) vs GPT-5 judge: 88% agreement.
-- Both flagged: 6, 38, 42, 77
-- RAGAS only: 2, 12, 23, 47, 51, 66, 88 (mostly short answers; one unmatched paraphrase halves the score)
-- Judge only: 3, 44, 50, 91 (qualifier embellishments inside otherwise-supported claims)
-Answer relevancy penalises terse correct answers (Q5: 0.55, Q19: 0.46); not reported alone.
-Context recall flagged the real k=3 comparison gap (Q47: 0.50). Q81 errored (judge output length limit).
-Install note: ragas 0.4.3 needs langchain<1.0 / langchain-community<0.4 (newer versions removed a module it imports).
