@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from collections import defaultdict
 from datetime import datetime
 import psycopg
@@ -7,7 +8,7 @@ from search import search, DSN, STRATEGY, MODE, RERANK
 
 K = 5
 
-with open("eval/golden.jsonl", encoding="utf-8") as f:
+with open(os.getenv("EVAL_FILE", "eval/golden.jsonl"), encoding="utf-8") as f:
     golden = [json.loads(line) for line in f if line.strip()]
 
 
@@ -64,3 +65,12 @@ with open(run_file, "w", encoding="utf-8") as f:
     json.dump({"strategy": STRATEGY, "mode": MODE, "rerank": RERANK, "k": K,
                "summary": summary, "questions": results}, f, indent=1)
 print(f"saved to {run_file}")
+
+# CI gate: exit with code 1 if recall@5 drops below the minimum
+min_r5 = os.getenv("MIN_RECALL5")
+if min_r5:
+    r5 = summary["ALL"]["R@5"]
+    if r5 < float(min_r5):
+        print(f"\nFAIL: recall@5 {r5:.2f} is below the minimum {min_r5}")
+        sys.exit(1)
+    print(f"\nPASS: recall@5 {r5:.2f} >= {min_r5}")
