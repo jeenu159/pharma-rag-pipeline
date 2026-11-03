@@ -12,7 +12,7 @@ load_dotenv()
 client = OpenAI()
 co = cohere.ClientV2(api_key=os.getenv("COHERE_API_KEY"))
 
-DSN = "host=localhost port=5434 dbname=pharma user=rag password=rag"
+DSN = os.getenv("DATABASE_URL", "host=localhost port=5434 dbname=pharma user=rag password=rag")
 MODEL = "text-embedding-3-small"
 RERANK_MODEL = "rerank-v3.5"
 STRATEGY = os.getenv("RAG_STRATEGY", "fixed_1000_200")
